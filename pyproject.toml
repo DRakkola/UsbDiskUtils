@@ -1,3 +1,22 @@
+[project]
+name = "UsbDiskUtils"
+version = "0.0.1"
+authors = [
+  { name="Debbichi Raki", email="debbichi1997@gmail.com" },
+]
+description = "UsbDiskUtils is a lightweight Python library designed to simplify the execution of tasks or codes upon the insertion or removal of a USB disk, providing a platform-independent solution. This library monitors USB disk events and triggers user-defined actions accordingly."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/DRakkola/pyusbutils"
+Issues = "https://github.com/DRakkola/pyusbutils/issues"
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"

@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+src/UsbDiskUtils/__init__.py
+src/UsbDiskUtils/macOS.py
+src/UsbDiskUtils/main.py
+src/UsbDiskUtils/system_check.py
+src/UsbDiskUtils.egg-info/PKG-INFO
+src/UsbDiskUtils.egg-info/SOURCES.txt
+src/UsbDiskUtils.egg-info/dependency_links.txt
+src/UsbDiskUtils.egg-info/top_level.txt
