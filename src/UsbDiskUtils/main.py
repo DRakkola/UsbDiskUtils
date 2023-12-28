@@ -2,7 +2,7 @@ from system_check import get_sys_info
 
 
 if get_sys_info()['System'] == 'Darwin':        
-    from activity.macOS import UsbDiskUtils
+    from macOS import UsbDiskUtils
 
 
     def test(nbr):
