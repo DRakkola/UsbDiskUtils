@@ -18,7 +18,8 @@ UsbDiskUtils checks the system information using the `get_sys_info` module. The 
 
     if __name__ == "__main__":
         # Example usage on macOS
-        usb_disk_utils = UsbDiskUtils(test, name="NIDHAL", path="YourPath", kind="YourKind")
+        # UsbDiskUtils will execute passed functions if a USB disk is inserted or removed which matches any of the specified criteria.
+        usb_disk_utils = UsbDiskUtils(test, name="Update", path="file:///System/Volumes/Update/", kind="apfs")
         usb_disk_utils.run_monitoring()
 
 
