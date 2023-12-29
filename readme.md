@@ -10,8 +10,9 @@ UsbDiskUtils checks the system information using the `get_sys_info` module. The 
 
     from macOS import UsbDiskUtils
 
-    def test(nbr):
-        print('Something happened....', nbr)
+    #add logic that you want to trigger on usb dick (pluged)
+    def test():
+        print('Something happened....')
 
     if __name__ == "__main__":
         # Example usage on macOS

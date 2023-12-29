@@ -5,8 +5,8 @@ if get_sys_info()['System'] == 'Darwin':
     from macOS import UsbDiskUtils
 
 
-    def test(nbr):
-        print('something happened ....', nbr)
+    def test():
+        print('something happened ....')
 
     if __name__ == "__main__":
         # Example usage

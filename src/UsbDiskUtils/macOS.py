@@ -1,6 +1,5 @@
 import sys
 import subprocess
-import select
 from threading import Thread
 from datetime import datetime
 
@@ -47,7 +46,7 @@ class UsbDiskUtils:
             # Process other events after the marker is found
             print(line)
             for event_handler in self.event_handler:
-                event_handler(line)
+                event_handler
 
     def run_monitoring(self):
         try:
@@ -62,12 +61,6 @@ class UsbDiskUtils:
             # Exit with error code 1 if the user presses Ctrl-C to interrupt the program.
             sys.exit(1)
 
-""" def test(nbr):
-    print('something happened ....', nbr)
 
-if __name__ == "__main__":
-    # Example usage
-    usb_disk_utils = UsbDiskUtils(test, name="NIDHAL", path="YourPath", kind="YourKind")
-    usb_disk_utils.run_monitoring() """
 
 
