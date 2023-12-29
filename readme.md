@@ -6,6 +6,8 @@ UsbDiskUtils is a Python library designed to handle USB disk events, allowing us
 
 UsbDiskUtils checks the system information using the `get_sys_info` module. The library includes specific implementations based on the detected operating system.
 
+## Example usage
+
 ```python
 
     from macOS import UsbDiskUtils
