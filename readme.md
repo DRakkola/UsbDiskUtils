@@ -12,15 +12,19 @@ UsbDiskUtils checks the system information using the `get_sys_info` module. The 
 
     from macOS import UsbDiskUtils
 
-    #add logic that you want to trigger on usb dick (pluged)
-    def test():
-        print('Something happened....')
+    def custom_callback(line):
+        print(f"Custom Callback: {line}")
+
 
     if __name__ == "__main__":
-        # Example usage on macOS
-        # UsbDiskUtils will execute passed functions if a USB disk is inserted or removed which matches any of the specified criteria.
-        usb_disk_utils = UsbDiskUtils(test, name="Update", path="file:///System/Volumes/Update/", kind="apfs")
-        usb_disk_utils.run_monitoring()
+        # Example usage
+        usb_disk_utils = UsbDiskUtils()
+        print(f"Starting monitoring...")
+        # you can launch more than one worker to handle multiple events/Usb drives at the same time
+        worker_id = usb_disk_utils.start_worker(name="NIDHAL", callback=custom_callback)
+
+        # You can stop the worker using its ID
+        #usb_disk_utils.stop_worker(worker_id)
 
 
 ```

@@ -1,58 +1,51 @@
 import sys
-"""
-UsbDiskUtils monitors disk activity and handles USB disk events.
-
-The class initializes with optional filters on name, path, and 
-disk kind to only handle events for specific disks.
-
-It spawns a thread to monitor diskutil output. When an event occurs, 
-the log line is passed to the handle_event method. This extracts the 
-event time and invokes any registered event handlers.
-
-The run_monitoring method starts the monitoring loop. It prints the 
-start time and catches KeyboardInterrupt to exit cleanly.
-"""
 import subprocess
 from threading import Thread
 from datetime import datetime
 
-
 class UsbDiskUtils:
-    def __init__(self, *args, **kwds):
-        self.name = kwds.get("name") or None
-        self.path = kwds.get("path") or None
-        self.kind = kwds.get("kind") or None
-        self.__thread = Thread(target=self.__monitoring, daemon=True)
-        self.event_handler = args
-        
+    def __init__(self):
+        self.workers = {}
 
-    def log_callback(self, log_line):
-        print("\r\033[K%s" % log_line, end="", flush=True)
+    def start_worker(self, name=None, path=None, kind=None, callback=None):
+        worker = Worker(name, path, kind, callback)
+        self.workers[id(worker)] = worker
+        worker.start()
+        return id(worker)
+
+    def stop_worker(self, worker_id):
+        worker = self.workers.pop(worker_id, None)
+        if worker:
+            worker.stop()
+
+class Worker(Thread):
+    def __init__(self, name=None, path=None, kind=None, callback=None):
+        super().__init__(target=self.__monitoring, daemon=True)
+        self.name = name
+        self.path = path
+        self.kind = kind
+        self.callback = callback
+        self.running = True
+
+    def stop(self):
+        self.running = False
 
     def __monitoring(self):
-        # Continuously polls the diskutil process to get disk events.
-        # Opens a subprocess to run the diskutil command.
-        # Reads lines from stdout, passing each to handle_event().
-        # Runs in a loop until diskutil exits.
-        # Catches any errors and prints the exception.
         DISKUTIL = ["/usr/sbin/diskutil", "activity"]
         try:
             with subprocess.Popen(
                 DISKUTIL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             ) as diskutil:
-                while True:
+                while self.running:
                     line = diskutil.stdout.readline()
-                    if not line:
+                    if not line or not self.running:
                         break
                     self.handle_event(line)
         except Exception as e:
             print(f"An error occurred: {e}")
 
     def handle_event(self, line):
-        # Parses disk activity log lines to extract event time
-        # and invoke registered event handlers if filters match
         if line.startswith("***DiskDisappeared") or line.startswith("***DiskAppeared"):
-            # Extract the time from the log entry
             log_time_str = (
                 line.split("Time=")[1]
                 .split()[0]
@@ -62,31 +55,9 @@ class UsbDiskUtils:
             )
             log_time = datetime.strptime(log_time_str, "%Y%m%d%H%M%S%f")
 
-            # Add conditions for specific events
             if (
                 (self.name and self.name in line)
                 or (self.path and self.path in line)
                 or (self.kind and self.kind in line)
             ):
-                self.log_callback(line)
-                for event_handler in self.event_handler:
-                    event_handler
-
-        elif not any([self.name, self.path, self.kind]):
-            # Process other events after the marker is found
-            print(line)
-            for event_handler in self.event_handler:
-                event_handler
-
-    def run_monitoring(self):
-        try:
-            launch_time = datetime.now()
-            print("Disk activity log started at... ", launch_time)
-
-            # Start monitoring in a separate thread
-            if not self.__thread.is_alive():
-                self.__thread.start()
-            self.__thread.join()
-        except KeyboardInterrupt:
-            # Exit with error code 1 if the user presses Ctrl-C to interrupt the program.
-            sys.exit(1)
+                self.callback(line)
